@@ -28,19 +28,23 @@ function createGrid() {
 function animateCells() {
   const centerCol = Math.floor(lastMouseX / cellSize);
   const centerRow = Math.floor(lastMouseY / cellSize);
+  const affectedRadius = 5; // Reduced the affected area
 
   cells.forEach((cell, index) => {
     const col = index % columns;
     const row = Math.floor(index / columns);
     const distance = Math.hypot(centerCol - col, centerRow - row);
-    const maxDistance = 5;
+    const maxDistance = affectedRadius;
     const factor = Math.max(0, 1 - distance / maxDistance);
     const zTranslation = factor * 50; // Increased for more noticeable 3D effect
 
+    // Darker shadow for the hovered cell and fading for surrounding cells
+    const shadowIntensity = 0.5 * factor; // Adjust this value for more/less intensity
+    const shadowBlur = 5 + 10 * factor; // Reduced blur for harder shadow
+    const shadowSpread = 5 * factor; // Spread the shadow more for closer cells
+
     cell.style.transform = `translateZ(${zTranslation}px)`;
-    cell.style.boxShadow = `0 ${2 + zTranslation / 2}px ${
-      5 + zTranslation
-    }px rgba(0, 0, 0, ${0.1 + factor * 0.2})`;
+    cell.style.boxShadow = `0 ${shadowSpread}px ${shadowBlur}px rgba(0, 0, 0, ${shadowIntensity})`;
   });
 }
 
