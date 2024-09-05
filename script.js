@@ -35,12 +35,12 @@ function animateCells() {
     const distance = Math.hypot(centerCol - col, centerRow - row);
     const maxDistance = 5;
     const factor = Math.max(0, 1 - distance / maxDistance);
-    const zTranslation = factor * 20; // Reduced from 50 to 20 for a subtler effect
+    const zTranslation = factor * 50; // Increased for more noticeable 3D effect
 
-    cell.style.transform = `translateY(${-zTranslation}px)`;
-    cell.style.boxShadow = `0 ${2 + zTranslation}px ${
+    cell.style.transform = `translateZ(${zTranslation}px)`;
+    cell.style.boxShadow = `0 ${2 + zTranslation / 2}px ${
       5 + zTranslation
-    }px rgba(0, 0, 0, ${0.1 + factor * 0.1})`;
+    }px rgba(0, 0, 0, ${0.1 + factor * 0.2})`;
   });
 }
 
@@ -63,7 +63,7 @@ function resetCells() {
   rafId = null;
 
   cells.forEach((cell) => {
-    cell.style.transform = "translateY(0)";
+    cell.style.transform = "translateZ(0)";
     cell.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.1)";
   });
 }
