@@ -4,6 +4,7 @@ let cells;
 let cellSize = 40;
 let columns, rows;
 let rafId;
+let lastMouseX, lastMouseY;
 
 function createGrid() {
   columns = Math.floor(container.clientWidth / cellSize);
@@ -21,24 +22,19 @@ function createGrid() {
   cells = Array.from(document.querySelectorAll(".cell"));
 }
 
-function animateCells(e) {
-  const rect = container.getBoundingClientRect();
-  const mouseX = e.clientX - rect.left;
-  const mouseY = e.clientY - rect.top;
-
-  const centerCol = Math.floor(mouseX / cellSize);
-  const centerRow = Math.floor(mouseY / cellSize);
+function animateCells() {
+  const centerCol = Math.floor(lastMouseX / cellSize);
+  const centerRow = Math.floor(lastMouseY / cellSize);
 
   cells.forEach((cell, index) => {
     const col = index % columns;
     const row = Math.floor(index / columns);
-    const distance = Math.sqrt(
-      Math.pow(centerCol - col, 2) + Math.pow(centerRow - row, 2)
-    );
+    const distance = Math.hypot(centerCol - col, centerRow - row);
     const maxDistance = 5;
-    const zTranslation = Math.max(0, 1 - distance / maxDistance) * 30;
-    const scale = 1 + (1 - distance / maxDistance) * 0.1;
-    const brightness = 100 + (1 - distance / maxDistance) * 20;
+    const factor = Math.max(0, 1 - distance / maxDistance);
+    const zTranslation = factor * 30;
+    const scale = 1 + factor * 0.1;
+    const brightness = 100 + factor * 20;
 
     cell.style.transform = `translateZ(${zTranslation}px) scale(${scale})`;
     cell.style.filter = `brightness(${brightness}%)`;
@@ -49,13 +45,24 @@ function animateCells(e) {
 }
 
 function handleMouseMove(e) {
-  if (rafId) {
-    cancelAnimationFrame(rafId);
+  const rect = container.getBoundingClientRect();
+  lastMouseX = e.clientX - rect.left;
+  lastMouseY = e.clientY - rect.top;
+
+  if (!rafId) {
+    rafId = requestAnimationFrame(animateLoop);
   }
-  rafId = requestAnimationFrame(() => animateCells(e));
+}
+
+function animateLoop() {
+  animateCells();
+  rafId = requestAnimationFrame(animateLoop);
 }
 
 function resetCells() {
+  cancelAnimationFrame(rafId);
+  rafId = null;
+
   cells.forEach((cell) => {
     cell.style.transform = "translateZ(0) scale(1)";
     cell.style.filter = "brightness(100%)";
