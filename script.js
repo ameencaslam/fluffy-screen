@@ -1,5 +1,6 @@
 const grid = document.getElementById("grid");
 const container = document.getElementById("container");
+const loading = document.getElementById("loading");
 let cells;
 let cellSize;
 let columns, rows;
@@ -7,7 +8,7 @@ let rafId;
 let lastMouseX, lastMouseY;
 
 function createGrid() {
-  cellSize = Math.min(container.clientWidth, container.clientHeight) / 20; // Adjust this divisor to change the number of cells
+  cellSize = Math.min(container.clientWidth, container.clientHeight) / 20;
   columns = Math.ceil(container.clientWidth / cellSize);
   rows = Math.ceil(container.clientHeight / cellSize);
 
@@ -34,17 +35,15 @@ function animateCells() {
     const distance = Math.hypot(centerCol - col, centerRow - row);
     const maxDistance = 5;
     const factor = Math.max(0, 1 - distance / maxDistance);
-    const zTranslation = factor * 30;
-    const scale = 1 + factor * 0.1;
-    const brightness = 100 + factor * 20;
+    const zTranslation = factor * 50; // Increased from 30 to 50
+    const scale = 1 + factor * 0.2; // Increased from 0.1 to 0.2
+    const brightness = 100 - factor * 30; // Increased from 20 to 30
 
-    // Use GSAP or a similar animation library for smoother transitions
-    // If you don't want to use a library, you can adjust the transition duration in CSS
     cell.style.transform = `translateZ(${zTranslation}px) scale(${scale})`;
     cell.style.filter = `brightness(${brightness}%)`;
     cell.style.boxShadow = `0 ${
       zTranslation / 2
-    }px ${zTranslation}px rgba(0, 0, 0, 0.3)`;
+    }px ${zTranslation}px rgba(0, 0, 0, 0.3)`; // Increased opacity from 0.1 to 0.3
   });
 }
 
@@ -69,11 +68,19 @@ function resetCells() {
   cells.forEach((cell) => {
     cell.style.transform = "translateZ(0) scale(1)";
     cell.style.filter = "brightness(100%)";
-    cell.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.1)";
+    cell.style.boxShadow = "none";
   });
 }
 
-window.addEventListener("load", createGrid);
+function init() {
+  createGrid();
+  setTimeout(() => {
+    loading.style.display = "none";
+    container.style.opacity = "1";
+  }, 2000);
+}
+
+window.addEventListener("load", init);
 container.addEventListener("mousemove", handleMouseMove);
 container.addEventListener("mouseleave", resetCells);
 window.addEventListener("resize", createGrid);
