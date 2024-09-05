@@ -35,16 +35,13 @@ function animateCells() {
     const distance = Math.hypot(centerCol - col, centerRow - row);
     const maxDistance = 5;
     const factor = Math.max(0, 1 - distance / maxDistance);
-    const zTranslation = factor * 50;
-    const scale = 1 + factor * 0.2;
 
-    // Calculate rotation angles
-    const xDiff = centerCol - col;
-    const yDiff = centerRow - row;
-    const xRotation = yDiff * factor * 5;
-    const yRotation = -xDiff * factor * 5;
+    // Calculate shadow based on distance
+    const shadowSize = Math.round(factor * 10);
+    const shadowOpacity = factor * 0.3;
 
-    cell.style.transform = `translateZ(${zTranslation}px) rotateX(${xRotation}deg) rotateY(${yRotation}deg) scale(${scale})`;
+    cell.style.boxShadow = `0 0 ${shadowSize}px rgba(0, 0, 0, ${shadowOpacity})`;
+    cell.style.transform = `translateY(${-factor * 5}px)`;
   });
 }
 
@@ -67,7 +64,8 @@ function resetCells() {
   rafId = null;
 
   cells.forEach((cell) => {
-    cell.style.transform = "translateZ(0) rotateX(0deg) rotateY(0deg) scale(1)";
+    cell.style.boxShadow = "none";
+    cell.style.transform = "translateY(0)";
   });
 }
 
