@@ -1,17 +1,19 @@
 const grid = document.getElementById("grid");
 const container = document.getElementById("container");
 let cells;
-let cellSize = 40;
+let cellSize;
 let columns, rows;
 let rafId;
 let lastMouseX, lastMouseY;
 
 function createGrid() {
-  columns = Math.floor(container.clientWidth / cellSize);
-  rows = Math.floor(container.clientHeight / cellSize);
+  cellSize = Math.min(container.clientWidth, container.clientHeight) / 20; // Adjust this divisor to change the number of cells
+  columns = Math.ceil(container.clientWidth / cellSize);
+  rows = Math.ceil(container.clientHeight / cellSize);
 
   grid.innerHTML = "";
-  grid.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+  grid.style.gridTemplateColumns = `repeat(${columns}, ${cellSize}px)`;
+  grid.style.gridTemplateRows = `repeat(${rows}, ${cellSize}px)`;
 
   for (let i = 0; i < rows * columns; i++) {
     const cell = document.createElement("div");
@@ -47,9 +49,8 @@ function animateCells() {
 }
 
 function handleMouseMove(e) {
-  const rect = container.getBoundingClientRect();
-  lastMouseX = e.clientX - rect.left;
-  lastMouseY = e.clientY - rect.top;
+  lastMouseX = e.clientX;
+  lastMouseY = e.clientY;
 
   if (!rafId) {
     rafId = requestAnimationFrame(animateLoop);
@@ -75,3 +76,4 @@ function resetCells() {
 window.addEventListener("load", createGrid);
 container.addEventListener("mousemove", handleMouseMove);
 container.addEventListener("mouseleave", resetCells);
+window.addEventListener("resize", createGrid);
