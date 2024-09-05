@@ -35,15 +35,16 @@ function animateCells() {
     const distance = Math.hypot(centerCol - col, centerRow - row);
     const maxDistance = 5;
     const factor = Math.max(0, 1 - distance / maxDistance);
-    const zTranslation = factor * 50; // Increased from 30 to 50
-    const scale = 1 + factor * 0.2; // Increased from 0.1 to 0.2
-    const brightness = 100 - factor * 30; // Increased from 20 to 30
+    const zTranslation = factor * 50;
+    const scale = 1 + factor * 0.2;
 
-    cell.style.transform = `translateZ(${zTranslation}px) scale(${scale})`;
-    cell.style.filter = `brightness(${brightness}%)`;
-    cell.style.boxShadow = `0 ${
-      zTranslation / 2
-    }px ${zTranslation}px rgba(0, 0, 0, 0.3)`; // Increased opacity from 0.1 to 0.3
+    // Calculate rotation angles
+    const xDiff = centerCol - col;
+    const yDiff = centerRow - row;
+    const xRotation = yDiff * factor * 5;
+    const yRotation = -xDiff * factor * 5;
+
+    cell.style.transform = `translateZ(${zTranslation}px) rotateX(${xRotation}deg) rotateY(${yRotation}deg) scale(${scale})`;
   });
 }
 
@@ -66,9 +67,7 @@ function resetCells() {
   rafId = null;
 
   cells.forEach((cell) => {
-    cell.style.transform = "translateZ(0) scale(1)";
-    cell.style.filter = "brightness(100%)";
-    cell.style.boxShadow = "none";
+    cell.style.transform = "translateZ(0) rotateX(0deg) rotateY(0deg) scale(1)";
   });
 }
 

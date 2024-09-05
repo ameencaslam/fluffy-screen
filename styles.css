@@ -66,7 +66,8 @@ body {
 
 .cell {
   background-color: #ffffff;
-  border: 1px solid #f1f1f1;
-  transition: transform 0.2s ease, filter 0.5s ease, box-shadow 0.2s ease;
-  will-change: transform, filter, box-shadow;
+  border: 1px solid #c7c7c7;
+  transition: transform 0.2s ease;
+  will-change: transform;
+  backface-visibility: hidden;
 }
