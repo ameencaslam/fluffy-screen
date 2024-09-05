@@ -36,6 +36,8 @@ function animateCells() {
     const scale = 1 + factor * 0.1;
     const brightness = 100 + factor * 20;
 
+    // Use GSAP or a similar animation library for smoother transitions
+    // If you don't want to use a library, you can adjust the transition duration in CSS
     cell.style.transform = `translateZ(${zTranslation}px) scale(${scale})`;
     cell.style.filter = `brightness(${brightness}%)`;
     cell.style.boxShadow = `0 ${
