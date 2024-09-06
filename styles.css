@@ -1,3 +1,7 @@
+* {
+  cursor: none !important;
+}
+
 body {
   display: flex;
   justify-content: center;
@@ -7,6 +11,7 @@ body {
   background-color: #ffffff;
   overflow: hidden;
   font-family: Arial, sans-serif;
+  cursor: none; /* Hide the default cursor */
 }
 
 #loading {
@@ -72,4 +77,16 @@ body {
   border-radius: 50%;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   transform-style: preserve-3d;
+}
+
+#custom-cursor {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.7);
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.1s, height 0.1s, background-color 0.1s;
 }

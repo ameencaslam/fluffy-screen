@@ -1,11 +1,14 @@
 const grid = document.getElementById("grid");
 const container = document.getElementById("container");
 const loading = document.getElementById("loading");
+const customCursor = document.getElementById("custom-cursor");
 let cells;
 let cellSize;
 let columns, rows;
 let rafId;
 let lastMouseX, lastMouseY;
+let mouseStopTimer;
+let isMouseMoving = false;
 
 function createGrid() {
   cellSize = Math.min(container.clientWidth, container.clientHeight) / 20;
@@ -51,6 +54,28 @@ function animateCells() {
 function handleMouseMove(e) {
   lastMouseX = e.clientX;
   lastMouseY = e.clientY;
+  isMouseMoving = true;
+
+  // Move the custom cursor
+  customCursor.style.left = `${lastMouseX}px`;
+  customCursor.style.top = `${lastMouseY}px`;
+
+  // Enlarge the cursor when over a cell
+  const hoveredCell = e.target.closest(".cell");
+  if (hoveredCell) {
+    customCursor.style.width = "12px";
+    customCursor.style.height = "12px";
+    customCursor.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+  } else {
+    customCursor.style.width = "8px";
+    customCursor.style.height = "8px";
+    customCursor.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+  }
+
+  clearTimeout(mouseStopTimer);
+  mouseStopTimer = setTimeout(() => {
+    isMouseMoving = false;
+  }, 100);
 
   if (!rafId) {
     rafId = requestAnimationFrame(animateLoop);
@@ -59,12 +84,17 @@ function handleMouseMove(e) {
 
 function animateLoop() {
   animateCells();
-  rafId = requestAnimationFrame(animateLoop);
+  if (isMouseMoving) {
+    rafId = requestAnimationFrame(animateLoop);
+  } else {
+    rafId = null;
+  }
 }
 
 function resetCells() {
   cancelAnimationFrame(rafId);
   rafId = null;
+  isMouseMoving = false;
 
   cells.forEach((cell) => {
     cell.style.transform = "translateZ(0)";
@@ -84,3 +114,12 @@ window.addEventListener("load", init);
 container.addEventListener("mousemove", handleMouseMove);
 container.addEventListener("mouseleave", resetCells);
 window.addEventListener("resize", createGrid);
+
+// Add this new event listener
+document.addEventListener("mouseleave", () => {
+  customCursor.style.display = "none";
+});
+
+document.addEventListener("mouseenter", () => {
+  customCursor.style.display = "block";
+});
